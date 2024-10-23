@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запрос сборочных заданий</title>
+</head>
+<body>
+    <h1>Введите данные для получения сборочных заданий</h1>
+    <form method="POST" action="/">
+        <label for="api_key">API-ключ:</label><br>
+        <input type="text" id="api_key" name="api_key" required><br><br>
+        
+        <label for="supply_id">ID поставки:</label><br>
+        <input type="text" id="supply_id" name="supply_id" required><br><br>
+        
+        <button type="submit">Получить задания</button>
+    </form>
+</body>
+</html>

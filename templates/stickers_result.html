@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Полученные Этикетки</title>
+</head>
+<body>
+    <h1>Полученные Этикетки</h1>
+
+    <!-- Кнопка для скачивания PDF -->
+    <form action="/download_stickers_pdf" method="post">
+        <button type="submit">Скачать этикетки</button>
+    </form>
+
+    <div>
+        {% if grouped_stickers %}
+            {% for article, stickers in grouped_stickers.items() %}
+                <h2>Артикул: {{ article }}</h2>
+                <ul>
+                    {% for sticker in stickers %}
+                        <li>
+                            <p>Order ID: {{ sticker.orderId }}</p>
+                            <img src="data:image/png;base64,{{ sticker.file }}" alt="Sticker">
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p>Нет данных для отображения.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

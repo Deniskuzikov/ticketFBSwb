@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты сборочных заданий</title>
+    <style>
+        table {
+            width: auto;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        // Функция для отправки запроса на получение этикеток по ID заказа и открытия их в новом окне
+        function getStickers(orderId) {
+            fetch('/get_stickers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ order_id: orderId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(`Ошибка: ${data.message}`);
+                } else {
+                    // Извлекаем данные из поля 'file' и открываем изображение в новом окне
+                    const base64Image = data.stickers[0].file;
+                    const imageWindow = window.open("");
+                    imageWindow.document.write(`<html><body><img src="data:image/png;base64,${base64Image}" alt="Этикетка" /></body></html>`);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Результаты сборочных заданий</h1>
+    
+    {% if orders_data %}
+        <h2>Данные сборочных заданий (отсортированы по количеству заказов для каждого артикула):</h2>
+        <form id="stickers-form" method="post" action="/get_all_stickers">
+            <button type="submit">Получить все этикетки</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Article</th>
+                    <th>ID</th>
+                    <th>SKUs</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders_data %}
+                <tr>
+                    <td>{{ order.no }}</td>
+                    <td>{{ order.article }}</td>
+                    <td><a href="javascript:void(0)" onclick="getStickers({{ order.id }})">{{ order.id }}</a></td> <!-- Ссылка с обработчиком клика -->
+                    <td>{{ order.skus }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif error_message %}
+        <h2>Ошибка:</h2>
+        <p>{{ error_message }}</p>
+    {% endif %}
+    
+    <a href="/">Вернуться назад</a>
+</body>
+</html>
